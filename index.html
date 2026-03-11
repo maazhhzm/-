@@ -1,11 +1,35 @@
+لقد قمت بتحسين الكود لجعله يعمل بكفاءة عالية على "جميع التطبيقات والأجهزة" (Web, Mobile, Tablet, PWA).
+
+**أبرز التحسينات التقنية والتصميمية:**
+
+1.  **دعم PWA (تطبيق الويب التقدمي):**
+    *   إضافة وسوم `meta` خاصة تجعل التطبيق يظهر كأنه تطبيق أصلي عند إضافته للشاشة الرئيسية (أيقونة شفافة، شريط حالة داكن).
+    *   تحديد لون السمة ليتناسب مع لون التطبيق.
+2.  **تحسين استجابة الشاشات (Responsive):**
+    *   **على الهواتف:** الحفاظ على التنقل السلس والنوافذ السفلية.
+    *   **على الأجهزة اللوحية (Tablet):** توسيع عرض التطبيق ليكون مريحاً للنظر واستخدام الشبكات الأوسع للإحصائيات.
+    *   **على الكمبيوتر (Desktop):** عرض التطبيق في حاوية مركزية أنيقة مع محاكاة مظهر التطبيق، مع تحسين أشرطة التمرير (Scrollbars) لتكون متناسقة.
+3.  **تحسينات الواجهة (UI/UX):**
+    *   منع تكبير الصفحة تلقائياً عند النقر على حقول الإدخال في iOS.
+    *   تحسين تجربة اللمس ومنع التحديد النصي العشوائي.
+    *   تحسين الجداول لتقبل التمرير الأفقي بلاكسر المحتوى.
+
+إليك الكود الكامل المحدث والمحسّن:
 
 ```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>نظام تقارير الإيجارات المتطور</title>
+    <!-- PWA & Mobile Optimization Meta Tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="msapplication-TileColor" content="#2563eb">
+    <meta name="description" content="نظام إدارة عقارات وإيجارات متكامل ومتجاوب">
+
+    <title>نظام إدارة الإيجارات</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -22,15 +46,47 @@
             --warning: #f59e0b;
             --purple: #8b5cf6;
             --nav-height: 65px;
+            --border-radius: 16px;
+            --app-max-width: 1000px; /* Wider for better desktop/tablet use */
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Tajawal', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+            /* Improve scrolling feel */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            user-select: none; /* App-like feel */
+        }
 
         /* --- Layout & Screens --- */
-        #app { flex: 1; overflow-y: auto; position: relative; scroll-behavior: smooth; padding-bottom: calc(var(--nav-height) + 20px); }
+        #app { 
+            flex: 1; 
+            overflow-y: auto; 
+            position: relative; 
+            scroll-behavior: smooth; 
+            padding-bottom: calc(var(--nav-height) + 20px); 
+            width: 100%;
+        }
         
-        .screen { display: none; padding: 1.5rem; animation: fadeIn 0.3s ease; }
+        /* Custom Scrollbar for polished look */
+        #app::-webkit-scrollbar { width: 6px; height: 6px; }
+        #app::-webkit-scrollbar-track { background: transparent; }
+        #app::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        #app::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .screen { display: none; padding: 1.5rem; animation: fadeIn 0.3s ease; max-width: 100%; margin: 0 auto; }
         .screen.active { display: block; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -41,36 +97,58 @@
         h3 { font-size: 1.1rem; color: var(--text); margin-top: 1.5rem; }
 
         /* --- Cards --- */
-        .card { background: var(--surface); border-radius: 16px; padding: 1.2rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 1rem; }
+        .card { background: var(--surface); border-radius: var(--border-radius); padding: 1.2rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 1rem; border: 1px solid rgba(0,0,0,0.02); }
         
         /* --- Dashboard Specific --- */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-        .stat-box { background: var(--surface); padding: 1.2rem; border-radius: 16px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .stat-box { background: var(--surface); padding: 1.2rem; border-radius: var(--border-radius); text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: transform 0.2s; }
+        .stat-box:active { transform: scale(0.98); }
         .stat-icon { font-size: 1.5rem; margin-bottom: 0.5rem; opacity: 0.8; }
         .stat-val { font-size: 1.2rem; font-weight: 800; display: block; margin-bottom: 0.2rem; line-height: 1.2; }
         .stat-label { font-size: 0.8rem; color: var(--text-light); }
 
         /* --- Financial Summary Box --- */
-        .financial-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: #f8fafc; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; border: 1px solid #e2e8f0; }
+        .financial-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: #f1f5f9; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; border: 1px solid #e2e8f0; }
         .fs-item { text-align: center; }
         .fs-val { font-weight: 800; font-size: 1.1rem; display: block; margin-bottom: 2px; }
         .fs-label { font-size: 0.75rem; color: var(--text-light); }
 
+        /* --- Report Summary Card --- */
+        .report-summary-card {
+            background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+        }
+        .rs-item { text-align: center; border-right: 1px solid rgba(0,0,0,0.05); }
+        .rs-item:last-child { border-right: none; }
+        .rs-val { font-size: 1.2rem; font-weight: 800; color: var(--primary-dark); display: block; }
+        .rs-label { font-size: 0.85rem; color: var(--text-light); font-weight: 600; }
+
         /* --- Form Styles --- */
         .form-group { margin-bottom: 1.2rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text); }
-        .form-group input, .form-group select { width: 100%; padding: 0.9rem; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 1rem; background: #f8fafc; outline: none; transition: 0.2s; }
-        .form-group input:focus { border-color: var(--primary); background: white; }
+        .form-group input, .form-group select { 
+            width: 100%; 
+            padding: 1rem; /* Larger touch target */
+            border: 1px solid #cbd5e1; 
+            border-radius: 12px; 
+            font-size: 16px; /* Prevents iOS zoom */
+            background: #f8fafc; 
+            outline: none; 
+            transition: all 0.2s; 
+            appearance: none; /* Removes default iOS styles */
+        }
+        .form-group input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         
-        .btn { width: 100%; padding: 1rem; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn { width: 100%; padding: 1rem; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform 0.1s, background 0.2s; user-select: none; -webkit-user-select: none;}
+        .btn:active { transform: scale(0.97); }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
-        .btn-primary:active { transform: scale(0.98); }
         .btn-danger { background: #fee2e2; color: var(--danger); margin-top: 1rem; }
         .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); margin-top: 1rem; }
         .btn-secondary { background: var(--text); color: white; margin-top: 0.5rem; }
 
         /* --- Records List --- */
-        .record-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
+        .record-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s; }
+        .record-item:hover { background: #f8fafc; }
         .record-item:last-child { border-bottom: none; }
         .record-info h4 { font-size: 1rem; margin-bottom: 0.2rem; }
         .record-info p { font-size: 0.85rem; color: var(--text-light); }
@@ -79,14 +157,20 @@
         .record-stats span { font-size: 0.75rem; color: var(--text-light); }
 
         /* --- Bottom Navigation --- */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height); background: white; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-size: 0.75rem; gap: 4px; cursor: pointer; height: 100%; }
-        .nav-item i { font-size: 1.3rem; margin-bottom: 2px; transition: 0.2s; }
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height); 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-around; align-items: center; 
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; 
+            padding-bottom: env(safe-area-inset-bottom); /* Safe area for iPhone X+ */
+        }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-size: 0.75rem; gap: 4px; cursor: pointer; height: 100%; transition: color 0.2s; }
+        .nav-item i { font-size: 1.3rem; margin-bottom: 2px; transition: transform 0.2s; }
         .nav-item.active { color: var(--primary); }
         .nav-item.active i { transform: translateY(-3px); }
 
         /* --- Detail Overlay --- */
-        .detail-overlay { position: fixed; top: 0; right: 0; width: 100%; height: 100%; background: var(--bg); z-index: 150; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: 80px; }
+        .detail-overlay { position: fixed; top: 0; right: 0; width: 100%; height: 100%; background: var(--bg); z-index: 150; transform: translateX(100%); transition: transform 0.3s ease; overflow-y: auto; padding-bottom: calc(var(--nav-height) + 20px); }
         .detail-overlay.open { transform: translateX(0); }
         .overlay-header { background: white; padding: 1rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 10; }
         .overlay-header-left { display: flex; align-items: center; gap: 10px; }
@@ -97,45 +181,37 @@
         .btn-delete { color: var(--danger); }
 
         /* --- Modals --- */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: flex-end; justify-content: center; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); }
         .modal.open { display: flex; }
-        .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 1.5rem; animation: slideUp 0.3s ease; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: white; width: 100%; max-width: 600px; border-radius: 20px 20px 0 0; padding: 1.5rem; animation: slideUp 0.3s ease; max-height: 90vh; overflow-y: auto; margin: auto; }
         @media(min-width: 768px) {
             .modal { align-items: center; }
-            .modal-content { border-radius: 16px; max-height: 95vh; }
+            .modal-content { border-radius: 20px; max-height: 90vh; }
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        /* --- Responsive Schedule Table (NEW DESIGN) --- */
-        .table-container { 
-            background: white; 
-            border-radius: 12px; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
-            overflow: hidden; 
-            border: 1px solid #e2e8f0; 
-            margin-bottom: 1rem; 
-        }
+        /* --- Responsive Schedule Table --- */
+        .table-container { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e2e8f0; margin-bottom: 1rem; }
         .schedule-table { width: 100%; border-collapse: collapse; }
         .schedule-table th { background: #f8fafc; color: var(--text-light); font-weight: 600; text-align: right; padding: 12px; font-size: 0.9rem; white-space: nowrap; }
         .schedule-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; vertical-align: middle; }
         .schedule-table tr:last-child td { border-bottom: none; }
-        .sch-action-cell { text-align: left; white-space: nowrap; width: 60px; }
+        .sch-action-cell { text-align: left; white-space: nowrap; width: 70px; }
         .status-badge { padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
         .badge-paid { background: #dcfce7; color: #166534; }
         .badge-unpaid { background: #fee2e2; color: #991b1b; }
         .badge-partial { background: #fef3c7; color: #92400e; }
-        .money-text { font-family: 'Courier New', monospace; font-weight: 600; }
+        .money-text { font-family: 'Courier New', monospace; font-weight: 600; letter-spacing: 0.5px; }
         
-        /* Wrapper for horizontal scroll on mobile */
-        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .table-responsive table { min-width: 600px; } 
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
+        .table-responsive table { min-width: 650px; } 
 
         /* --- Report Paper Styles --- */
         .report-paper { background: white; padding: 2rem; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 1rem; position: relative; }
         .report-header { text-align: center; border-bottom: 2px dashed #ccc; padding-bottom: 1rem; margin-bottom: 1.5rem; }
         .report-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px solid #f0f0f0; padding: 5px 0; }
         .report-table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 1rem; }
-        .report-table { width: 100%; border-collapse: collapse; min-width: 600px; font-size: 0.9rem; } 
+        .report-table { width: 100%; border-collapse: collapse; min-width: 700px; font-size: 0.9rem; } 
         .report-table th, .report-table td { border: 1px solid #ddd; padding: 10px; text-align: center; white-space: nowrap; } 
         .report-table th { background: #f8fafc; font-weight: 700; }
 
@@ -143,17 +219,48 @@
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #333; color: white; padding: 12px 24px; border-radius: 50px; z-index: 300; transition: transform 0.3s; display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* Desktop Adaptation */
+        /* --- Optimized Responsive Layout --- */
         @media (min-width: 768px) {
-            #app { max-width: 600px; margin: 0 auto; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
-            body { background: #e2e8f0; align-items: flex-start; padding-top: 20px; padding-bottom: 20px; height: auto; overflow-y: auto;}
-            .bottom-nav { max-width: 600px; left: 50%; transform: translateX(-50%); border-radius: 16px; margin-bottom: 20px; height: 70px; }
-            #app { padding-bottom: 0; height: auto; min-height: 80vh; }
-            .detail-overlay { max-width: 600px; left: 50%; transform: translateX(120%); }
+            /* Tablet/Desktop: Center the app but make it wider */
+            #app { 
+                max-width: var(--app-max-width); 
+                margin: 0 auto; 
+                background: white; 
+                box-shadow: 0 0 30px rgba(0,0,0,0.08); 
+                height: 90vh; 
+                margin-top: 5vh;
+                border-radius: 20px;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+            body { background: #cbd5e1; align-items: center; height: 100vh; overflow: hidden;}
+            
+            /* 3 Columns Dashboard on wider screens */
+            .stats-grid { grid-template-columns: repeat(4, 1fr); }
+            
+            /* Nav moves inside or becomes a side rail? Let's keep bottom nav for tablet for consistency, maybe increase width */
+            .bottom-nav { 
+                max-width: var(--app-max-width); 
+                left: 50%; 
+                transform: translateX(-50%); 
+                border-radius: 0 0 20px 20px; 
+                height: 70px; 
+                margin-bottom: 0;
+            }
+            
+            .detail-overlay { 
+                max-width: 100%; 
+                left: 50%; 
+                transform: translateX(120%); 
+                border-radius: 20px;
+                box-shadow: 0 0 50px rgba(0,0,0,0.1);
+            }
             .detail-overlay.open { transform: translateX(-50%); right: auto; }
-            .modal-content { max-width: 900px; } 
+            .modal-content { border-radius: 20px; max-height: 85vh; } 
         }
         
+        /* --- Print Optimization --- */
         @media print {
             body * { visibility: hidden; }
             .modal.open, .modal.open * { visibility: visible; }
@@ -162,6 +269,7 @@
             .no-print { display: none !important; }
             .table-responsive, .report-table-responsive { overflow: visible; }
             .report-table th, .report-table td { white-space: normal; }
+            #app { height: auto; overflow: visible; box-shadow: none; margin: 0; max-width: 100%; border-radius: 0; }
         }
     </style>
 </head>
@@ -232,7 +340,7 @@
         <div id="screen-records" class="screen">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
                 <h1>سجلات العقارات</h1>
-                <input type="text" id="searchRecords" placeholder="بحث..." style="padding:8px; border-radius:8px; border:1px solid #ddd; width:120px;" oninput="renderRecordsList()">
+                <input type="text" id="searchRecords" placeholder="بحث..." style="padding:10px; border-radius:8px; border:1px solid #ddd; width:150px;" oninput="renderRecordsList()">
             </div>
             <div class="card" style="padding:0;" id="recordsListContainer"></div>
         </div>
@@ -241,10 +349,12 @@
         <div id="screen-reports" class="screen">
             <h1>التقارير</h1>
             
+            <!-- Global Summary (Updates to Today) -->
             <div class="card">
-                <h3 style="margin-bottom:1rem; border-bottom:1px solid #eee; padding-bottom:0.5rem;">ملخص مالي عام</h3>
+                <h3 style="margin-bottom:1rem; border-bottom:1px solid #eee; padding-bottom:0.5rem;">ملخص مالي عام (حتى اليوم)</h3>
                 <div class="report-row"><span>إجمالي قيمة العقود</span><strong id="report-total-contracts">0</strong></div>
-                <div class="report-row"><span>إجمالي المتبقي</span><strong id="report-total-due" style="color:var(--danger)">0</strong></div>
+                <div class="report-row"><span>المستحق حتى تاريخه</span><strong id="report-total-due-date" style="color:var(--primary)">0</strong></div>
+                <div class="report-row"><span>إجمالي المتأخرات</span><strong id="report-total-due" style="color:var(--danger)">0</strong></div>
                 <div class="report-row" style="border:none"><span>إجمالي المدفوع</span><strong id="report-total-paid" style="color:var(--success)">0</strong></div>
             </div>
 
@@ -265,7 +375,7 @@
                     <i class="fa-solid fa-trash" style="color:var(--danger)"></i>
                 </div>
                 <div class="record-item" style="cursor:pointer;">
-                    <div class="record-info"><h4>نسخة التطبيق</h4><p>الإصدار 3.2 (Ultimate)</p></div>
+                    <div class="record-info"><h4>نسخة التطبيق</h4><p>الإصدار 3.4 (Ultimate PWA)</p></div>
                     <i class="fa-solid fa-info-circle"></i>
                 </div>
             </div>
@@ -345,7 +455,7 @@
         </div>
     </div>
 
-    <!-- Modal: Edit Payment (NEW) -->
+    <!-- Modal: Edit Payment -->
     <div id="editPaymentModal" class="modal">
         <div class="modal-content">
             <h2 style="text-align:center">تعديل عملية السداد</h2>
@@ -395,10 +505,12 @@
     <div id="toast" class="toast"><i class="fa-solid fa-check-circle"></i> <span id="toastMsg">تمت العملية</span></div>
 
     <script>
+        // --- State Management ---
         let properties = JSON.parse(localStorage.getItem('app_properties')) || [];
         let transactions = JSON.parse(localStorage.getItem('app_transactions')) || [];
         let currentDetailId = null;
 
+        // --- Core Functions ---
         function saveData() {
             localStorage.setItem('app_properties', JSON.stringify(properties));
             localStorage.setItem('app_transactions', JSON.stringify(transactions));
@@ -414,6 +526,7 @@
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
+        // --- Navigation ---
         function navTo(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -437,7 +550,7 @@
             if(currentDetailId) renderDetailContent(currentDetailId);
         }
 
-        // --- Home Screen ---
+        // --- Screens Logic ---
         function renderHome() {
             document.getElementById('currentDateDisplay').innerText = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             let totalProps = properties.length;
@@ -467,7 +580,6 @@
             document.getElementById('recent-activity-list').innerHTML = recentActivityHTML;
         }
 
-        // --- Add Property ---
         function handleAddProperty(e) {
             e.preventDefault();
             const newProp = {
@@ -486,7 +598,6 @@
             navTo('screen-records');
         }
 
-        // --- Records Screen ---
         function renderRecordsList() {
             const list = document.getElementById('recordsListContainer');
             const search = document.getElementById('searchRecords').value.toLowerCase();
@@ -521,7 +632,6 @@
             });
         }
 
-        // --- Detail Overlay ---
         function openDetailOverlay(id) {
             currentDetailId = id;
             document.getElementById('detailOverlay').classList.add('open');
@@ -533,7 +643,7 @@
             currentDetailId = null;
         }
 
-        // --- Edit Property ---
+        // --- Edit/Delete Property ---
         function openEditModal() {
             if (!currentDetailId) return;
             const prop = properties.find(p => p.id === currentDetailId);
@@ -561,7 +671,6 @@
             }
         }
 
-        // --- Delete Property ---
         function confirmDeleteProperty() {
             if (!currentDetailId) return;
             if (confirm('هل أنت متأكد من حذف هذا العقار وجميع سجلات مدفوعاته؟')) {
@@ -574,7 +683,29 @@
             }
         }
 
-        // --- UPDATED: Detail Content with Responsive Table & Actions ---
+        // --- Helper: Calculate Summary To Date ---
+        function calculateSummaryToDate(prop, propTrans) {
+            const start = new Date(prop.startDate);
+            const now = new Date();
+            let totalDue = 0;
+            let totalPaid = 0;
+
+            if (now < start) {
+                return { due: 0, paid: 0, remaining: 0, started: false };
+            }
+
+            let current = new Date(start);
+            while (current <= now) {
+                const key = current.toISOString().slice(0, 7);
+                totalDue += prop.monthlyRent;
+                totalPaid += propTrans.filter(t => t.month === key).reduce((s,t) => s+t.amount, 0);
+                current.setMonth(current.getMonth() + 1);
+                current.setDate(1);
+            }
+            
+            return { due: totalDue, paid: totalPaid, remaining: totalDue - totalPaid, started: true };
+        }
+
         function renderDetailContent(id) {
             const prop = properties.find(p => p.id === id);
             if(!prop) return;
@@ -589,7 +720,7 @@
             for(let i=0; i<prop.durationMonths; i++) {
                 const d = new Date(start);
                 d.setMonth(d.getMonth() + i);
-                const key = d.toISOString().slice(0, 7); // YYYY-MM
+                const key = d.toISOString().slice(0, 7); 
                 const mName = d.toLocaleDateString('ar-SA', { month: 'long', year: 'numeric' });
                 
                 const trans = transactions.find(t => t.month === key && t.propertyId === id);
@@ -600,13 +731,9 @@
                 if (paid >= prop.monthlyRent) { statusClass = 'badge-paid'; statusText = 'مدفوع'; } 
                 else if (paid > 0) { statusClass = 'badge-partial'; statusText = 'جزئي'; }
 
-                // Actions HTML
                 let actionsHTML = '-';
                 if (trans) {
-                    actionsHTML = `
-                        <button class="btn-icon-only btn-edit" onclick="openEditPaymentModal('${trans.id}')" title="تعديل"><i class="fa-solid fa-pen"></i></button>
-                        <button class="btn-icon-only btn-delete" onclick="openDeletePaymentModal('${trans.id}')" title="حذف"><i class="fa-solid fa-trash"></i></button>
-                    `;
+                    actionsHTML = `<button class="btn-icon-only btn-edit" onclick="openEditPaymentModal('${trans.id}')" title="تعديل"><i class="fa-solid fa-pen"></i></button><button class="btn-icon-only btn-delete" onclick="openDeletePaymentModal('${trans.id}')" title="حذف"><i class="fa-solid fa-trash"></i></button>`;
                 }
 
                 tableRows += `<tr>
@@ -645,9 +772,7 @@
                                     <th style="text-align:left">إجراءات</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                ${tableRows}
-                            </tbody>
+                            <tbody>${tableRows}</tbody>
                         </table>
                     </div>
                 </div>
@@ -655,11 +780,10 @@
             container.innerHTML = html;
         }
 
-        // --- Payment Actions: Edit/Delete (NEW) ---
+        // --- Payment Actions: Edit/Delete ---
         function openEditPaymentModal(transId) {
             const trans = transactions.find(t => t.id === transId);
             if(!trans) return;
-            
             document.getElementById('editPaymentId').value = trans.id;
             document.getElementById('editPaymentAmount').value = trans.amount;
             document.getElementById('editPaymentDate').value = trans.paymentDate;
@@ -696,14 +820,22 @@
 
         // --- Reports ---
         function renderReportsScreen() {
-            let totalContract = 0, totalPaid = 0;
+            let totalContract = 0, totalPaid = 0, totalDueToDate = 0;
+            
             properties.forEach(p => {
+                const propTrans = transactions.filter(t => t.propertyId === p.id);
                 totalContract += (p.monthlyRent * p.durationMonths);
-                totalPaid += transactions.filter(t => t.propertyId === p.id).reduce((s,t) => s+t.amount, 0);
+                totalPaid += propTrans.reduce((s,t) => s+t.amount, 0);
+                const summary = calculateSummaryToDate(p, propTrans);
+                totalDueToDate += summary.due;
             });
-            const totalDue = totalContract - totalPaid;
+
+            const totalRemaining = totalContract - totalPaid;
+            const totalRemainingToDate = totalDueToDate - totalPaid;
+
             document.getElementById('report-total-contracts').innerText = formatCurrency(totalContract);
-            document.getElementById('report-total-due').innerText = formatCurrency(totalDue);
+            document.getElementById('report-total-due-date').innerText = formatCurrency(totalDueToDate);
+            document.getElementById('report-total-due').innerText = formatCurrency(totalRemaining);
             document.getElementById('report-total-paid').innerText = formatCurrency(totalPaid);
 
             const list = document.getElementById('individual-reports-list');
@@ -724,8 +856,10 @@
             const prop = properties.find(p => p.id === id);
             if(!prop) return;
             const propTrans = transactions.filter(t => t.propertyId === id);
-            const paid = propTrans.reduce((s,t) => s+t.amount, 0);
-            const contractVal = prop.monthlyRent * prop.durationMonths;
+            
+            const summaryTotal = { due: prop.monthlyRent * prop.durationMonths, paid: propTrans.reduce((s,t) => s+t.amount, 0), remaining: 0 };
+            summaryTotal.remaining = summaryTotal.due - summaryTotal.paid;
+            const summaryToDate = calculateSummaryToDate(prop, propTrans);
             
             let tableRows = '';
             const start = new Date(prop.startDate);
@@ -758,11 +892,27 @@
             const html = `
                 <div class="report-paper">
                     <div class="report-header"><h2>تقرير حالة العقد</h2><p>التاريخ: ${new Date().toLocaleDateString('ar-SA')}</p></div>
+                    
+                    <div class="report-summary-card">
+                        <div class="rs-item">
+                            <span class="rs-val">${formatCurrency(summaryToDate.due)}</span>
+                            <span class="rs-label">الواجب (حتى اليوم)</span>
+                        </div>
+                        <div class="rs-item">
+                            <span class="rs-val" style="color:var(--success)">${formatCurrency(summaryToDate.paid)}</span>
+                            <span class="rs-label">المدفوع (حتى اليوم)</span>
+                        </div>
+                        <div class="rs-item">
+                            <span class="rs-val" style="color:var(--danger)">${formatCurrency(summaryToDate.remaining)}</span>
+                            <span class="rs-label">المتبقي (حتى اليوم)</span>
+                        </div>
+                    </div>
+
                     <div class="report-row"><span>العقار:</span> <strong>${prop.propertyName}</strong></div>
                     <div class="report-row"><span>المستأجر:</span> <strong>${prop.tenantName}</strong></div>
-                    <div class="report-row"><span>قيمة العقد:</span> <strong>${formatCurrency(contractVal)}</strong></div>
-                    <div class="report-row"><span>المدفوع:</span> <strong>${formatCurrency(paid)}</strong></div>
-                    <div class="report-row"><span>المتبقي:</span> <strong>${formatCurrency(contractVal - paid)}</strong></div>
+                    <div class="report-row"><span>قيمة العقد الكلي:</span> <strong>${formatCurrency(summaryTotal.due)}</strong></div>
+                    <div class="report-row"><span>المدفوع الكلي:</span> <strong>${formatCurrency(summaryTotal.paid)}</strong></div>
+                    <div class="report-row"><span>المتبقي الكلي:</span> <strong>${formatCurrency(summaryTotal.remaining)}</strong></div>
                     
                     <div class="report-table-responsive">
                         <table class="report-table">
@@ -779,10 +929,14 @@
         function generateComprehensiveReport() {
             if(properties.length === 0) { showToast('لا توجد بيانات للتقرير الشامل', 'error'); return; }
             let allRows = [];
-            let totalPortfolioDue = 0, totalPortfolioPaid = 0;
+            let totalPortfolioDue = 0, totalPortfolioPaid = 0, totalPortfolioDueToDate = 0;
 
             properties.forEach(p => {
                 const start = new Date(p.startDate);
+                const propTrans = transactions.filter(t => t.propertyId === p.id);
+                const sumToDate = calculateSummaryToDate(p, propTrans);
+                totalPortfolioDueToDate += sumToDate.due;
+
                 for(let i=0; i<p.durationMonths; i++) {
                     const d = new Date(start);
                     d.setMonth(d.getMonth() + i);
@@ -824,11 +978,28 @@
 
             const html = `
                 <div class="report-paper">
-                    <div class="report-header"><h2>التقرير الشامل لجميع العقارات</h2><p>تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}</p></div>
+                    <div class="report-header">
+                        <h2>التقرير الشامل لجميع العقارات</h2>
+                        <p>تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}</p>
+                    </div>
+                    
+                    <div class="report-summary-card">
+                        <div class="rs-item">
+                            <span class="rs-val">${formatCurrency(totalPortfolioDueToDate)}</span>
+                            <span class="rs-label">الواجب (حتى اليوم)</span>
+                        </div>
+                        <div class="rs-item">
+                            <span class="rs-val" style="color:var(--success)">${formatCurrency(totalPortfolioPaid)}</span>
+                            <span class="rs-label">المدفوع (حتى اليوم)</span>
+                        </div>
+                        <div class="rs-item">
+                            <span class="rs-val" style="color:var(--danger)">${formatCurrency(totalPortfolioDueToDate - totalPortfolioPaid)}</span>
+                            <span class="rs-label">المتبقي (حتى اليوم)</span>
+                        </div>
+                    </div>
+
                     <div class="report-row"><span>عدد العقارات:</span> <strong>${properties.length}</strong></div>
-                    <div class="report-row"><span>إجمالي الاستحقاقات:</span> <strong>${formatCurrency(totalPortfolioDue)}</strong></div>
-                    <div class="report-row"><span>إجمالي المدفوعات:</span> <strong>${formatCurrency(totalPortfolioPaid)}</strong></div>
-                    <div class="report-row" style="border:none; color:var(--danger)"><span>إجمالي المتأخرات:</span> <strong>${formatCurrency(totalPortfolioDue - totalPortfolioPaid)}</strong></div>
+                    <div class="report-row"><span>إجمالي عقود المحفظة:</span> <strong>${formatCurrency(totalPortfolioDue)}</strong></div>
                     
                     <div class="report-table-responsive">
                         <table class="report-table">
